@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login & Dashboard</title>
+<style>
+  body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #0d1b2a;
+    color: #fff;
+  }
+  /* ==== LOGIN FORM ==== */
+  #login-page {
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(135deg,#4facfe,#00f2fe);
+  }
+  #login-box {
+    background: #fff;
+    padding: 30px;
+    border-radius: 10px;
+    width: 300px;
+    text-align: center;
+    color: #000;
+  }
+  #login-box h2 {margin-bottom: 20px;}
+  #login-box input {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+  }
+  #login-box button {
+    background: #4facfe;
+    color: #fff;
+    border: none;
+    padding: 10px;
+    border-radius: 5px;
+    width: 100%;
+    font-size: 16px;
+    cursor: pointer;
+  }
+  #login-box button:hover { background:#007bff; }
+  .link-register {
+    margin-top: 10px;
+    color: #007bff;
+    cursor: pointer;
+    text-decoration: underline;
+    display: block;
+  }
+
+  /* ==== DASHBOARD ==== */
+  header {
+    background: #223a5e;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    padding: 0 15px;
+    justify-content: space-between;
+  }
+  .logo { font-weight: bold; font-size: 18px; }
+  .menu-toggle { font-size: 24px; cursor: pointer; }
+  .sidebar {
+    background: #fff;
+    color: #000;
+    width: 250px;
+    position: fixed;
+    top: 50px;
+    bottom: 0;
+    left: -250px;
+    overflow-y: auto;
+    transition: 0.3s;
+    padding: 10px 0;
+    z-index: 2;
+  }
+  .sidebar.active { left: 0; }
+  .sidebar h3 {
+    font-size: 14px;
+    margin: 15px;
+    color: #666;
+  }
+  .sidebar a {
+    display: flex;
+    align-items: center;
+    padding: 10px 20px;
+    color: #000;
+    text-decoration: none;
+    font-size: 15px;
+  }
+  .sidebar a:hover { background: #f0f0f0; }
+  main {
+    margin-top: 50px;
+    padding: 15px;
+  }
+  .card {
+    background: #1b263b;
+    padding: 15px;
+    margin-bottom: 15px;
+    border-radius: 8px;
+  }
+  .card h4 { margin: 0 0 5px; color: #7cc4ff; }
+  .card p { margin: 0; font-size: 18px; font-weight: bold; }
+
+  /* hide dashboard initially */
+  #dashboard { display:none; }
+
+  /* 🔔 Notifikasi Error */
+  #error-box {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #ff4d4f;
+    color: #fff;
+    padding: 15px 25px;
+    border-radius: 8px;
+    font-weight: bold;
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.5s ease;
+    z-index: 9999;
+  }
+  #error-box.show {
+    opacity: 1;
+    top: 40px;
+    pointer-events: auto;
+  }
+</style>
+</head>
+<body>
+
+<!-- ===== LOGIN PAGE ===== -->
+<div id="login-page">
+  <div id="login-box">
+    <h2>Login</h2>
+    <input type="email" id="loginUser" placeholder="Email">
+    <input type="password" id="loginPass" placeholder="Password">
+    <button onclick="login()">Login</button>
+    <span class="link-register" onclick="showRegister()">Buat akun baru</span>
+  </div>
+</div>
+
+<!-- ===== REGISTER PAGE ===== -->
+<div id="register-page" style="display:none; height:100vh; display:flex; justify-content:center; align-items:center; background:linear-gradient(135deg,#ff9a9e,#fad0c4);">
+  <div id="login-box">
+    <h2>Daftar Akun</h2>
+    <input type="text" id="regName" placeholder="Nama Lengkap">
+    <input type="email" id="regEmail" placeholder="Email">
+    <input type="password" id="regPass" placeholder="Password">
+    <button onclick="register()">Daftar</button>
+    <span class="link-register" onclick="showLogin()">Sudah punya akun? Login</span>
+  </div>
+</div>
+
+<!-- ===== DASHBOARD ===== -->
+<div id="dashboard">
+  <header>
+    <div class="logo">FAYU PEDIA</div>
+    <div class="menu-toggle" onclick="toggleSidebar()">☰</div>
+  </header>
+
+  <nav class="sidebar" id="sidebar">
+    <h3>Menu</h3>
+    <a href="#">📊 Dasbor</a>
+    <a href="#">👑 Peringkat</a>
+    <a href="#">🛒 Buat Pesanan</a>
+    <a href="#">📦 Pesanan Massal</a>
+    <a href="#">🔄 Refill</a>
+    <a href="#">💰 Deposit</a>
+    <a href="#">🗂 Riwayat Deposit</a>
+    <a href="#">💬 Tiket</a>
+    <h3>Akun</h3>
+    <a href="#">⚙️ Pengaturan</a>
+    <a href="#">💳 Mutasi Saldo</a>
+    <a href="#">🧑‍💻 Log Login</a>
+    <a href="#" onclick="logout()">🚪 Logout</a>
+    <h3>Sitemap</h3>
+    <a href="#">☎️ Kontak Kami</a>
+    <a href="#">❓ FAQ</a>
+    <a href="#">📜 Ketentuan Layanan</a>
+    <a href="#">📄 Tutorial</a>
+  </nav>
+
+  <main>
+    <div class="card">
+      <h4>Sisa Saldo Anda</h4>
+      <p>Rp 34</p>
+    </div>
+    <div class="card">
+      <h4>Pesanan Anda Bulan Ini</h4>
+      <p>Rp 0</p>
+    </div>
+    <div class="card">
+      <h4>Berita</h4>
+      <p>Penambahan Layanan Baru FAYUPEDIA-SMM<br>
+        TikTok Views FP 41 | Min 5K | 1M/Day | No Refill Rp 5/K
+      </p>
+    </div>
+  </main>
+</div>
+
+<!-- 🔔 ERROR BOX -->
+<div id="error-box"></div>
+
+<script type="module">
+  // === Firebase Import ===
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
+  import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-analytics.js";
+  import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
+
+  // ✅ konfigurasi firebase (pastikan kamu pakai config punyamu sendiri)
+  const firebaseConfig = {
+    apiKey: "AIzaSyBqsipSvg7sJ1RUwoi5wQrHSmBPZflEvzc",
+    authDomain: "apknokos-675e9.firebaseapp.com",
+    projectId: "apknokos-675e9",
+    storageBucket: "apknokos-675e9.appspot.com",
+    messagingSenderId: "1036774889701",
+    appId: "1:1036774889701:web:9886c3c2926b5be2991c0c",
+    measurementId: "G-K54T501QWC"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const analytics = getAnalytics(app);
+  const auth = getAuth(app);
+
+  // ==== ANIMASI ERROR ====
+  function showError(msg){
+    const box = document.getElementById('error-box');
+    box.textContent = msg;
+    box.classList.add('show');
+    setTimeout(()=>box.classList.remove('show'), 3000);
+  }
+
+  // ==== TAMPIL REGISTER ====
+  window.showRegister = function(){
+    document.getElementById('login-page').style.display='none';
+    document.getElementById('register-page').style.display='flex';
+  }
+
+  // ==== TAMPIL LOGIN ====
+  window.showLogin = function(){
+    document.getElementById('register-page').style.display='none';
+    document.getElementById('login-page').style.display='flex';
+  }
+
+  // ==== LOGIN ====
+  window.login = function(){
+    const email = document.getElementById('loginUser').value;
+    const pass = document.getElementById('loginPass').value;
+    signInWithEmailAndPassword(auth, email, pass)
+    .then(() => {
+      document.getElementById('login-page').style.display='none';
+      document.getElementById('dashboard').style.display='block';
+    })
+    .catch(err=>{
+      if(err.code==='auth/invalid-email'){ showError('Email tidak valid!'); }
+      else if(err.code==='auth/user-not-found'){ showError('Akun tidak ditemukan!'); }
+      else if(err.code==='auth/wrong-password'){ showError('Password salah!'); }
+      else { showError('Error: '+err.message); }
+    });
+  }
+
+  // ==== REGISTER ====
+  window.register = function(){
+    const name = document.getElementById('regName').value;
+    const email = document.getElementById('regEmail').value;
+    const pass = document.getElementById('regPass').value;
+    createUserWithEmailAndPassword(auth, email, pass)
+    .then(()=>{
+      showError('Daftar sukses! Silakan login.');
+      showLogin();
+    })
+    .catch(err=>{
+      if(err.code==='auth/email-already-in-use'){ showError('Email sudah digunakan!'); }
+      else if(err.code==='auth/invalid-email'){ showError('Email tidak valid!'); }
+      else if(err.code==='auth/weak-password'){ showError('Password terlalu lemah!'); }
+      else { showError('Error: '+err.message); }
+    });
+  }
+
+  // ==== LOGOUT ====
+  window.logout = function(){
+    signOut(auth).then(()=>{
+      document.getElementById('dashboard').style.display='none';
+      document.getElementById('login-page').style.display='flex';
+      showError('Berhasil logout!');
+    });
+  }
+
+  // ==== SIDEBAR ====
+  window.toggleSidebar = function(){
+    document.getElementById('sidebar').classList.toggle('active');
+  }
+</script>
+</body>
+</html>
